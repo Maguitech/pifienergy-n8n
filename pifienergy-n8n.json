@@ -1,0 +1,407 @@
+{
+  "name": "My workflow 15",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        -100
+      ],
+      "id": "4cc63cdf-c06f-428f-9381-479ec7e67795",
+      "name": "Telegram Trigger",
+      "webhookId": "1985359d-4c3a-4306-9103-679d3af6f243",
+      "credentials": {
+        "telegramApi": {
+          "id": "ynqGfu4oxaw1YSkb",
+          "name": "Telegram account test demo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=Eres un asistente automatizado que trabaja dentro de Telegram usando el nodo `chat` de n8n. Tu objetivo es registrar usuarios para un seguro médico recopilando 7 datos personales. Responde siempre como un humano cordial pero eficiente.\n{{ $now }}\n\n🎯 DATOS A RECOPILAR (en este orden):\n1. Nombre completo\n2. Teléfono\n3. Email\n4. Edad (y a partir de ella calcular la fecha de nacimiento en formato AAAA-MM-DD)\n5. Dirección completa\n6. Documento de identidad\n7. Ocupación\n\n⚙️ FUNCIONAMIENTO:\n- Guarda cada dato cuando sea válido.\n- Si el usuario envía varios datos juntos, identifica los válidos y guarda los que correspondan.\n- Solo pregunta por los datos que falten. No repitas lo que ya está bien recogido.\n- Si el usuario responde \"ok\", \"sí\", \"vale\", o similar, simplemente continúa con la siguiente pregunta.\n- Si el mensaje está vacío o es inválido, responde indicando el error y vuelve a pedirlo.\n\n🔍 VALIDACIONES:\n- Teléfono: debe tener al menos 6 cifras numéricas y puede llevar el codigo del pais +34 para españa.\n- Email: debe contener `@` y `.`\n- Edad: debe ser un número razonable (entre 0 y 120).\n- Todos los demás campos no deben estar vacíos.\n\n📅 CONVERSIÓN DE EDAD A FECHA DE NACIMIENTO:\n- Si el usuario indica su edad (por ejemplo \"30\"), preguntale tambien el mes y el dia, calcula el año actual  menos esa edad \n- Guarda la fecha de nacimiento como: `AAAA-MM-DD`. Ejemplo: para edad 30 en 2025 → `1995-01-01`\n\n📨 FORMATO DE RESPUESTA:\nDespués de recibir un dato válido, responde amablemente y pasa a la siguiente pregunta. Ejemplo:\n\n**Usuario:** Juan Pérez  \n**Bot:** ¡Perfecto, Juan Pérez! 📌 Ahora dime tu número de teléfono, por favor.\n\n⚠️ SI HAY UN ERROR:\nResponde con algo como:  \n\"⚠️ Ese dato no parece válido. ¿Podrías escribirlo de nuevo, por favor?\"\n\n📋 AL FINALIZAR:\nCuando tengas los 7 datos, haz un resumen claro con etiquetas y valores, por ejemplo:\n\n\n- 👤 Nombre: Juan Pérez  \n- 📞 Teléfono: 612345678  \n- 📧 Email: juan@example.com  \n- 🎂 Fecha de nacimiento: 1995-01-01  \n- 🏡 Dirección: Calle Mayor 5, Madrid  \n- 🆔 Documento: 12345678A  \n- 💼 Ocupación: Profesor\n\nConfirma con el usuario que todo este correcto y responde :\n🎉 ¡Registro completado!, Te contactaremos pronto.  \n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        320,
+        -120
+      ],
+      "id": "b47f5152-a796-4308-a501-e1c3f656b823",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "=usuarios",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "nombre_completo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('nombre_completo', ``, 'string') }}",
+            "telefono": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('telefono', ``, 'string') }}",
+            "email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('email', ``, 'string') }}",
+            "fecha_nacimiento": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fecha_nacimiento', ``, 'string') }}",
+            "direccion": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('direccion', ``, 'string') }}",
+            "documento_identidad": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('documento_identidad', ``, 'string') }}",
+            "ocupacion": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('ocupacion', ``, 'string') }}",
+            "fecha_registro": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fecha_registro', ``, 'string') }}",
+            "id": "={{ $fromAI('id', ``, 'number') }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nombre_completo",
+              "displayName": "nombre_completo",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telefono",
+              "displayName": "telefono",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha_nacimiento",
+              "displayName": "fecha_nacimiento",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "direccion",
+              "displayName": "direccion",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "documento_identidad",
+              "displayName": "documento_identidad",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ocupacion",
+              "displayName": "ocupacion",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha_registro",
+              "displayName": "fecha_registro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        780,
+        260
+      ],
+      "id": "18ea0df4-6320-460a-a171-4158b771212d",
+      "name": "STORE",
+      "credentials": {
+        "postgres": {
+          "id": "s1pwVT440rOJmcgp",
+          "name": "Neon demo pfienergy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        -100
+      ],
+      "id": "9fe5efa1-8639-4da6-b558-ebdc693f9b5b",
+      "name": "Telegram",
+      "webhookId": "0af6eee5-42f8-4307-82da-d77483a50c20",
+      "credentials": {
+        "telegramApi": {
+          "id": "ynqGfu4oxaw1YSkb",
+          "name": "Telegram account test demo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        520,
+        280
+      ],
+      "id": "638f6441-f448-4370-b9b8-31598f9d5212",
+      "name": "Memoria",
+      "credentials": {
+        "postgres": {
+          "id": "s1pwVT440rOJmcgp",
+          "name": "Neon demo pfienergy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {
+          "maxTokens": 500,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        280
+      ],
+      "id": "2e73ec8c-360f-48c1-93a1-1983c0c468be",
+      "name": "Cerebro",
+      "credentials": {
+        "openAiApi": {
+          "id": "uHyWZxFUbSZlOOWC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Entrada de datos de usuario\nEste nodo escucha los mensages entrantes al chat y activa el flujo",
+        "height": 360
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -260
+      ],
+      "id": "1b3cd261-aeae-4aa2-a2f3-bbfc545701cd",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Engine \nAgente de IA encargado de recibir las respuestas, grabar en base de datos los datos del usuario y responderle",
+        "height": 360,
+        "width": 540,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -260
+      ],
+      "id": "15ba171d-6019-4c62-9c50-a572a79848e5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Respuestas\nEste nodo responde al usuario en el chat",
+        "height": 360
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        780,
+        -260
+      ],
+      "id": "d6e0a59e-62c3-44be-bdc3-ec9718c98ec9",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Conexion con Open AI \nEste nodo gestiona las repuestas y las preguntas",
+        "height": 280,
+        "width": 260,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        120,
+        120
+      ],
+      "id": "9057c621-33b1-48b9-9dfb-e3383cf2e9e6",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Memoria de Conversacion\nEste nodo hace que el agente tenga todo el contexto de la conversacion",
+        "height": 280,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        420,
+        120
+      ],
+      "id": "5cddf2d3-6aa9-45e5-b201-d30da3b6b882",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## GRABAR EN DB\nEste nodo se encarga de grabar los datos del usuario una vez finalizado",
+        "height": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        700,
+        120
+      ],
+      "id": "cdaadfb2-3508-4049-8383-cf4858f60aee",
+      "name": "Sticky Note5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "STORE": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cerebro": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "291f9ea2-5dc0-42c3-aff2-88137ebb49f5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d464578fe0cda9002dae1e2a5f34a62440e0c09c5bd3b95653e72d3496a67eb5"
+  },
+  "id": "ldVGfPo9vKQvpmRM",
+  "tags": []
+}
